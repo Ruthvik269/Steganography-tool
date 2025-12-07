@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganography Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Steganography<span class="highlight">Tool</span></h1>
+            <p>Hide secrets in plain sight.</p>
+        </header>
+
+        <div class="glass-panel">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="encode">Encode</button>
+                <button class="tab-btn" data-tab="decode">Decode</button>
+            </div>
+
+            <div class="content-area">
+                <!-- ENCODE SECTION -->
+                <div id="encode" class="tab-content active">
+                    <div class="upload-zone" id="encode-dropzone">
+                        <div class="icon">📁</div>
+                        <p>Drag & Drop Image or <span class="clickable">Browse</span></p>
+                        <input type="file" id="encode-file"
+                            accept="image/png, image/jpeg, image/jpg, image/bmp, image/gif, image/webp" hidden>
+                        <div class="file-info" id="encode-file-info"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <textarea id="secret-message" placeholder="Enter your secret message here..."></textarea>
+                        <div class="capacity-container hidden" id="capacity-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="capacity-fill"></div>
+                            </div>
+                            <span id="capacity-text">0 / 0 chars</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="encode-password"
+                            placeholder="Optional: Set a password for encryption">
+                    </div>
+
+                    <button id="encode-btn" class="action-btn">Hide Message & Download</button>
+
+                    <!-- Sharing Section -->
+                    <div id="sharing-section" class="sharing-section hidden">
+                        <div class="section-divider"></div>
+                        <h3 class="share-title">📤 Share Encoded Image</h3>
+
+                        <!-- QR Code Display -->
+                        <div id="qr-container" class="qr-container hidden">
+                            <img id="qr-code-img" src="" alt="QR Code" class="qr-code-image">
+                            <p class="qr-text">Scan this QR code</p>
+                        </div>
+
+                        <!-- Share Buttons -->
+                        <div class="share-buttons">
+                            <button id="generate-qr-btn" class="share-btn qr-btn" title="Generate QR Code">
+                                <span class="btn-icon">📱</span>
+                                <span class="btn-text">QR Code</span>
+                            </button>
+                            <button id="email-share-btn" class="share-btn email-btn" title="Share via Email">
+                                <span class="btn-icon">✉️</span>
+                                <span class="btn-text">Email</span>
+                            </button>
+                            <button id="whatsapp-share-btn" class="share-btn whatsapp-btn" title="Share on WhatsApp">
+                                <span class="btn-icon">💬</span>
+                                <span class="btn-text">WhatsApp</span>
+                            </button>
+                        </div>
+
+                        <div id="share-status" class="share-status"></div>
+                    </div>
+
+                    <div id="encode-status" class="status-msg"></div>
+                </div>
+
+                <!-- DECODE SECTION -->
+                <div id="decode" class="tab-content">
+                    <div class="upload-zone" id="decode-dropzone">
+                        <div class="icon">🔓</div>
+                        <p>Drag & Drop Encoded Image or <span class="clickable">Browse</span></p>
+                        <input type="file" id="decode-file"
+                            accept="image/png, image/jpeg, image/jpg, image/bmp, image/gif, image/webp" hidden>
+                        <div class="file-info" id="decode-file-info"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="decode-password" placeholder="Enter password (if encrypted)">
+                    </div>
+
+                    <button id="decode-btn" class="action-btn">Reveal Message</button>
+
+                    <div class="result-box hidden" id="decode-result-box">
+                        <h3>Hidden Message:</h3>
+                        <p id="decoded-message"></p>
+                    </div>
+                    <div id="decode-status" class="status-msg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
