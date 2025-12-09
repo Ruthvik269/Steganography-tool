@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // State
     let maxCapacity = 0;
-    let lastEncodedImageBlob = null;
 
     // File Upload Handling
     setupFileUpload('encode-dropzone', 'encode-file', 'encode-file-info', true);
@@ -144,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const blob = await response.blob();
-                lastEncodedImageBlob = blob;
 
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -155,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 a.remove();
 
                 showStatus(encodeStatus, 'Image encoded and downloaded!', 'success');
-                document.getElementById('sharing-section').classList.remove('hidden');
             } else {
                 const data = await response.json();
                 showStatus(encodeStatus, data.error || 'Encoding failed', 'error');
@@ -223,75 +220,5 @@ document.addEventListener('DOMContentLoaded', () => {
             element.textContent = '';
             element.className = 'status-msg';
         }, 5000);
-    }
-
-    // Sharing Functionality
-    const shareStatus = document.getElementById('share-status');
-
-    // QR Code Generation
-    document.getElementById('generate-qr-btn').addEventListener('click', async () => {
-        if (!lastEncodedImageBlob) {
-            showShareStatus('Please encode an image first!', 'error');
-            return;
-        }
-
-        try {
-            const shareMessage = window.location.origin + ' - Steganography Tool: Secret message hidden in image!';
-
-            const response = await fetch('/api/generate-qr', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: shareMessage })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById('qr-code-img').src = data.qr_code;
-                document.getElementById('qr-container').classList.remove('hidden');
-                showShareStatus('QR Code generated!', 'success');
-            } else {
-                showShareStatus('Failed to generate QR code', 'error');
-            }
-        } catch (err) {
-            showShareStatus('Error generating QR code', 'error');
-        }
-    });
-
-    // Email Share
-    document.getElementById('email-share-btn').addEventListener('click', () => {
-        if (!lastEncodedImageBlob) {
-            showShareStatus('Please encode an image first!', 'error');
-            return;
-        }
-
-        const subject = 'Encoded Image - Steganography Tool';
-        const body = 'I\'ve hidden a secret message in this image using steganography. Download and decode it to reveal the message!';
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        window.location.href = mailtoLink;
-        showShareStatus('Opening email client...', 'success');
-    });
-
-    // WhatsApp Share
-    document.getElementById('whatsapp-share-btn').addEventListener('click', () => {
-        if (!lastEncodedImageBlob) {
-            showShareStatus('Please encode an image first!', 'error');
-            return;
-        }
-
-        const message = 'Check out this encoded image with a hidden message! Decode it to reveal the secret.';
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-
-        window.open(whatsappUrl, '_blank');
-        showShareStatus('Opening WhatsApp...', 'success');
-    });
-
-    function showShareStatus(message, type) {
-        shareStatus.textContent = message;
-        shareStatus.className = `share-status ${type}`;
-        setTimeout(() => {
-            shareStatus.textContent = '';
-            shareStatus.className = 'share-status';
-        }, 3000);
     }
 });
